@@ -25,7 +25,7 @@ LOGGER_ID = int(getenv("LOGGER_ID", ""))
 
 OWNER_ID = int(getenv("OWNER_ID", "7520092354"))
 
-BOT_USERNAME = getenv("BOT_USERNAME" , "DollxMusic_bot")
+BOT_USERNAME = getenv("BOT_USERNAME" , "AlisaMusicRobot")
 
 COMMAND_HANDLER = getenv("COMMAND_HANDLER", "! / .").split()
 
@@ -35,7 +35,7 @@ HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
 UPSTREAM_REPO = getenv(
     "UPSTREAM_REPO",
-    "https://github.com/auntyxd12/XXDOLLMUSICXX",
+    "https://github.com/fefefe12/Alisa",
 )
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "SPY")
 GIT_TOKEN = getenv(
