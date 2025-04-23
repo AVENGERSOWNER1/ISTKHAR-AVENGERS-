@@ -23,7 +23,7 @@ SONG_DOWNLOAD_DURATION = int(
 
 LOGGER_ID = int(getenv("LOGGER_ID", ""))
 
-OWNER_ID = int(getenv("OWNER_ID", "7520092354"))
+OWNER_ID = int(getenv("OWNER_ID", "7995626429"))
 
 BOT_USERNAME = getenv("BOT_USERNAME" , "AlisaMusicRobot")
 
@@ -35,7 +35,7 @@ HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
 UPSTREAM_REPO = getenv(
     "UPSTREAM_REPO",
-    "https://github.com/fefefe12/Alisa",
+    "https://github.com/IstkharXrobot/ISTKHAR-MUSIC",
 )
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "SPY")
 GIT_TOKEN = getenv(
