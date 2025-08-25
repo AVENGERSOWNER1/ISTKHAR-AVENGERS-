@@ -28,7 +28,7 @@ VALID_EMOJII = ["🔥", "💋", "🥺", "😒", "💖",
                 "💘", "💕", "✨", "🥰", "🍌", "💔",
                 "😓", "🫧"]
 
-@app.on_message(filters.command(["mstart"]) & filters.private & ~BANNED_USERS)
+@app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
@@ -159,3 +159,4 @@ async def welcome(client, message: Message):
                 await message.stop_propagation()
         except Exception as ex:
             print(ex)
+
