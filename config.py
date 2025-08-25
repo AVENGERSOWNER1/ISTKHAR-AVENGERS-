@@ -33,6 +33,9 @@ HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
 
 HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
+API_URL = getenv("API_URL", 'https://api.thequickearn.xyz') #youtube song url
+API_KEY = getenv("API_KEY", 'NxGBNexGenBots901703') # youtube song api ke 
+
 UPSTREAM_REPO = getenv(
     "UPSTREAM_REPO",
     "https://github.com/IstkharXrobot/ISTKHAR-MUSIC",
@@ -44,6 +47,7 @@ GIT_TOKEN = getenv(
 
 SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/iamIstkhar")
 SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/ARISHFA_UPDATE")
+
 
 AUTO_LEAVING_ASSISTANT = bool(getenv("AUTO_LEAVING_ASSISTANT", False))
 AUTO_SUGGESTION_MODE = getenv("AUTO_SUGGESTION_MODE", "True")
