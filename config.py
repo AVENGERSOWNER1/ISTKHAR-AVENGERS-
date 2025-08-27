@@ -27,7 +27,7 @@ OWNER_ID = int(getenv("OWNER_ID", "7995626429"))
 
 BOT_USERNAME = getenv("BOT_USERNAME" , "KittuxRobot")
 
-COMMAND_HANDLER = getenv("COMMAND_HANDLER " "/", "!", "%", ",", "@", "#","p","P",).split()
+COMMAND_HANDLER = getenv("COMMAND_HANDLER", "! / .").split()
 
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
 
