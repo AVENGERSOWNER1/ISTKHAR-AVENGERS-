@@ -1,8 +1,10 @@
+import logging
+import traceback
 import time
 import random 
 from pyrogram import filters
 from pyrogram.enums import ChatType
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
 from youtubesearchpython.__future__ import VideosSearch
 
 import config
@@ -12,37 +14,32 @@ from Spy.plugins.sudo.sudoers import sudoers_list
 from Spy.utils.database import (
     add_served_chat,
     add_served_user,
+    get_assistant,
     blacklisted_chats,
     get_lang,
     is_banned_user,
     is_on_off,
+    is_served_private_chat,
 )
 from Spy.utils.decorators.language import LanguageStart
 from Spy.utils.formatters import get_readable_time
-from Spy.utils.inline import first_page, private_panel, start_panel
-from config import BANNED_USERS
-from strings import get_string
+from Spy.utils.inline import help_pannel, private_panel, start_pannel
+from config import BANNED_USERS, START_IMG_URL, D
+from strings import get_string, image
 
-
-VALID_EMOJII = ["🔥", "💋", "🥺", "😒", "💖",
-                "💘", "💕", "✨", "🥰", "🍌", "💔",
-                "😓", "🫧"]
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
-    random_emoji = random.choice(VALID_EMOJII)  # Pick a valid emoji
-    try:
-        await message.react(random_emoji)
-    except Exception as e:
-        print(f"Error reacting with emoji: {e}")
+    await message.react(random.choice(D))
+
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
         if name[0:4] == "help":
-            keyboard = first_page(_)
+            keyboard = help_pannel(_)
             return await message.reply_photo(
-                photo=config.START_IMG_URL,
+                random.choice(image),
                 caption=_["help_1"].format(config.SUPPORT_CHAT),
                 reply_markup=keyboard,
             )
@@ -51,7 +48,7 @@ async def start_pm(client, message: Message, _):
             if await is_on_off(2):
                 return await app.send_message(
                     chat_id=config.LOGGER_ID,
-                    text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>sᴜᴅᴏʟɪsᴛ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+                    text=f"❖ {message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>sᴜᴅᴏʟɪsᴛ</b>.\n\n<b>● ᴜsᴇʀ ɪᴅ ➥</b> <code>{message.from_user.id}</code>\n<b>● ᴜsᴇʀɴᴀᴍᴇ ➥</b> @{message.from_user.username}",
                 )
             return
         if name[0:3] == "inf":
@@ -89,74 +86,115 @@ async def start_pm(client, message: Message, _):
             if await is_on_off(2):
                 return await app.send_message(
                     chat_id=config.LOGGER_ID,
-                    text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>ᴛʀᴀᴄᴋ ɪɴғᴏʀᴍᴀᴛɪᴏɴ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+                    text=f"❖ {message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>ᴛʀᴀᴄᴋ ɪɴғᴏʀᴍᴀᴛɪᴏɴ</b>.\n\n<b>● ᴜsᴇʀ ɪᴅ ➥</b> <code>{message.from_user.id}</code>\n<b>● ᴜsᴇʀɴᴀᴍᴇ ➥</b> @{message.from_user.username}",
                 )
     else:
         out = private_panel(_)
         await message.reply_photo(
-            photo=config.START_IMG_URL,
+            random.choice(image),
             caption=_["start_2"].format(message.from_user.mention, app.mention),
             reply_markup=InlineKeyboardMarkup(out),
         )
         if await is_on_off(2):
             return await app.send_message(
                 chat_id=config.LOGGER_ID,
-                text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+                text=f"❖ {message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.\n\n<b>● ᴜsᴇʀ ɪᴅ ➥</b> <code>{message.from_user.id}</code>\n<b>● ᴜsᴇʀɴᴀᴍᴇ ➥</b> @{message.from_user.username}",
             )
 
 
-@app.on_message(filters.command(["mstart"]) & filters.group & ~BANNED_USERS)
+
+@app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
-async def start_gp(client, message: Message, _):
-    out = start_panel(_)
-    uptime = int(time.time() - _boot_)
-    await message.reply_photo(
-        photo=config.START_IMG_URL,
-        caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
-        reply_markup=InlineKeyboardMarkup(out),
-    )
-    return await add_served_chat(message.chat.id)
+async def testbot(client, message: Message, _):
+    try:
+        # React with random emoji
+        await message.react(random.choice(D))
+    except Exception as e:
+        print(f"Reaction Error: {e}")
+
+    try:
+        # Create Inline keyboard button with link
+        keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("𝗺𝘆 𝗼𝘄𝗻𝗲𝗿", url="https://t.me/DvisDmBot?start")]
+        ])
+
+        # Send message with inline keyboard
+        await message.reply_text(
+            "<blockquote>❍ Hᴇʏ ʙᴀʙʏ :) ɴᴇᴇᴅ ʜᴇʟᴘ? ʀᴇᴀᴄʜ ᴏᴜᴛ ᴛᴏ</blockquote>",
+            quote=True,
+            reply_markup=keyboard
+        )
+        print("Reply sent successfully.")
+    except Exception as e:
+        print(f"Reply Error: {e}")
 
 
-@app.on_message(filters.new_chat_members, group=-1)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@app.on_message(filters.new_chat_members, group=3)
 async def welcome(client, message: Message):
+    chat_id = message.chat.id
+
+    # Ensure config.OWNER_ID is a list
+    if isinstance(config.OWNER_ID, int):
+        config.OWNER_ID = [config.OWNER_ID]
+
+    # Private bot mode check
+    if config.PRIVATE_BOT_MODE:
+        if not await is_served_private_chat(chat_id):
+            await message.reply_text(
+                "**ᴛʜɪs ʙᴏᴛ's ᴘʀɪᴠᴀᴛᴇ ᴍᴏᴅᴇ ʜᴀs ʙᴇᴇɴ ᴇɴᴀʙʟᴇᴅ. ᴏɴʟʏ ᴍʏ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs. ɪғ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴜsᴇ ɪᴛ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ, ᴀsᴋ ᴍʏ ᴏᴡɴᴇʀ ᴛᴏ ᴀᴜᴛʜᴏʀɪᴢᴇ ʏᴏᴜʀ ᴄʜᴀᴛ.**"
+            )
+            return await client.leave_chat(chat_id)
+    else:
+        await add_served_chat(chat_id)
+
+    # Handle new chat members
     for member in message.new_chat_members:
         try:
-            language = await get_lang(message.chat.id)
+            language = await get_lang(chat_id)
             _ = get_string(language)
-            if await is_banned_user(member.id):
-                try:
-                    await message.chat.ban_member(member.id)
-                except:
-                    pass
-            if member.id == app.id:
-                if message.chat.type != ChatType.SUPERGROUP:
-                    await message.reply_text(_["start_4"])
-                    return await app.leave_chat(message.chat.id)
-                if message.chat.id in await blacklisted_chats():
-                    await message.reply_text(
-                        _["start_5"].format(
-                            app.mention,
-                            f"https://t.me/{app.username}?start=sudolist",
-                            config.SUPPORT_CHAT,
-                        ),
-                        disable_web_page_preview=True,
-                    )
-                    return await app.leave_chat(message.chat.id)
 
-                out = start_panel(_)
+            # If bot itself joins the chat
+            if member.id == client.id:
+                try:
+                    groups_photo = await client.download_media(
+                        message.chat.photo.big_file_id, file_name=f"chatpp{chat_id}.png"
+                    )
+                    chat_photo = groups_photo if groups_photo else START_IMG_URL
+                except AttributeError:
+                    chat_photo = START_IMG_URL
+
+                userbot = await get_assistant(chat_id)
+                out = start_pannel(_)
                 await message.reply_photo(
-                    photo=config.START_IMG_URL,
-                    caption=_["start_3"].format(
-                        message.from_user.first_name,
-                        app.mention,
-                        message.chat.title,
-                        app.mention,
-                    ),
+                    photo=chat_photo,
+                    caption=_["start_9"],
                     reply_markup=InlineKeyboardMarkup(out),
                 )
-                await add_served_chat(message.chat.id)
-                await message.stop_propagation()
-        except Exception as ex:
-            print(ex)
 
+            # Handle owner joining
+            if member.id in config.OWNER_ID:
+                await message.reply_text(
+                    _["start_7"].format(client.mention, member.mention)
+                )
+                continue
+
+
+        except Exception as e:
+            logger.error(f"Error: {e}\nTraceback: {traceback.format_exc()}")
+            continue
+
+
+@app.on_callback_query(filters.regex("go_to_start"))
+@LanguageStart
+async def go_to_home(client, callback_query: CallbackQuery, _):
+    try:
+        out = music_start_pannel(_)
+        await callback_query.message.edit_text(
+            text=_["start_9"].format(callback_query.message.from_user.mention, app.mention),
+            reply_markup=InlineKeyboardMarkup(out),
+        )
+    except Exception as e:
+        logger.error(f"Error editing message: {e}")
