@@ -1,12 +1,12 @@
-
-import json, random
-import os
+import random
 from typing import Dict, List, Union
 
-import config
 from Spy import userbot
 from Spy.core.mongo import mongodb
-from Spy.utils.mongo import db
+
+authdb = mongodb.adminauth
+authuserdb = mongodb.authuser
+autoenddb = mongodb.autoend
 
 afkdb = db.afk
 authdb = mongodb.adminauth
