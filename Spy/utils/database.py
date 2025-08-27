@@ -7,19 +7,12 @@ from Spy.core.mongo import mongodb
 authdb = mongodb.adminauth
 authuserdb = mongodb.authuser
 autoenddb = mongodb.autoend
-
-afkdb = db.afk
-authdb = mongodb.adminauth
-authuserdb = mongodb.authuser
-autoenddb = mongodb.autoend
 assdb = mongodb.assistants
 blacklist_chatdb = mongodb.blacklistChat
 blockeddb = mongodb.blockedusers
 chatsdb = mongodb.chats
 channeldb = mongodb.cplaymode
-cleandb = mongodb.cleanmode
 countdb = mongodb.upcount
-commanddb = mongodb.commands
 gbansdb = mongodb.gban
 langdb = mongodb.language
 onoffdb = mongodb.onoffper
@@ -28,7 +21,6 @@ playtypedb = mongodb.playtypedb
 skipdb = mongodb.skipmode
 sudoersdb = mongodb.sudoers
 usersdb = mongodb.tgusersdb
-privatedb = mongodb.privatechats
 
 # Shifting to memory [mongo sucks often]
 active = []
@@ -45,47 +37,6 @@ pause = {}
 playmode = {}
 playtype = {}
 skipmode = {}
-
-# Define file paths
-CLEANMODE_DB = os.path.join(config.TEMP_DB_FOLDER, "cleanmode.json")
-COMMAND_DB = os.path.join(config.TEMP_DB_FOLDER, "command.json")
-
-def load_cleanmode():
-    if os.path.exists(CLEANMODE_DB):
-        with open(CLEANMODE_DB, "r") as file:
-            return json.load(file)
-    return []
-
-
-def load_command():
-    if os.path.exists(COMMAND_DB):
-        with open(COMMAND_DB, "r") as file:
-            return json.load(file)
-    return []
-
-
-cleanmode = load_cleanmode()
-command = load_command()
-
-
-async def delete_served_chat(chat_id: int):
-    await chatsdb.delete_one({"chat_id": chat_id})
-
-async def is_commanddelete_on(chat_id: int) -> bool:
-    return chat_id not in command
-
-async def is_served_private_chat(chat_id: int) -> bool:
-    chat = await privatedb.find_one({"chat_id": chat_id})
-    if not chat:
-        return False
-
-async def add_wlcm(chat_id: int):
-    return await wlcm.insert_one({"chat_id": chat_id})
-
-async def rm_wlcm(chat_id: int):   
-    chat = await wlcm.find_one({"chat_id": chat_id})
-    if chat: 
-        return await wlcm.delete_one({"chat_id": chat_id})
 
 
 async def get_assistant_number(chat_id: int) -> str:
@@ -154,34 +105,6 @@ async def get_assistant(chat_id: int) -> str:
         else:
             userbot = await set_assistant(chat_id)
             return userbot
-
-async def is_afk(user_id: int) -> bool:
-    user = await afkdb.find_one({"user_id": user_id})
-    if not user:
-        return False, {}
-    return True, user["reason"]
-
-
-async def add_afk(user_id: int, mode):
-    await afkdb.update_one(
-        {"user_id": user_id}, {"$set": {"reason": mode}}, upsert=True
-    )
-
-
-async def remove_afk(user_id: int):
-    user = await afkdb.find_one({"user_id": user_id})
-    if user:
-        return await afkdb.delete_one({"user_id": user_id})
-
-
-async def get_afk_users() -> list:
-    users = afkdb.find({"user_id": {"$gt": 0}})
-    if not users:
-        return []
-    users_list = []
-    for user in await users.to_list(length=1000000000):
-        users_list.append(user)
-    return users_list
 
 
 async def set_calls_assistant(chat_id):
