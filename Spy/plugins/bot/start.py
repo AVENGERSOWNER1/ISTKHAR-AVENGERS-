@@ -1,14 +1,18 @@
 import time
-import random 
+import random
+import asyncio
 from pyrogram import filters
 from pyrogram.enums import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from youtubesearchpython.__future__ import VideosSearch
 
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 import config
 from Spy import app
 from Spy.misc import _boot_
 from Spy.plugins.sudo.sudoers import sudoers_list
+from Spy.utils.database import get_served_chats, get_served_users, get_sudoers
+from Spy.utils import bot_sys_stats
 from Spy.utils.database import (
     add_served_chat,
     add_served_user,
@@ -19,30 +23,66 @@ from Spy.utils.database import (
 )
 from Spy.utils.decorators.language import LanguageStart
 from Spy.utils.formatters import get_readable_time
-from Spy.utils.inline import first_page, private_panel, start_panel
+from Spy.utils.inline import help_pannel, private_panel, start_panel
 from config import BANNED_USERS
 from strings import get_string
 
+#--------------------------
 
-VALID_EMOJII = ["🔥", "💋", "🥺", "😒", "💖",
-                "💘", "💕", "✨", "🥰", "🍌", "💔",
-                "😓", "🫧"]
+NEXI_VID = [
+    "https://files.catbox.moe/4q7c4w.jpg",
+    "https://files.catbox.moe/90z6sq.jpg",
+    "https://files.catbox.moe/rdfi4z.jpg",
+    "https://files.catbox.moe/6f9rgp.jpg",
+    "https://files.catbox.moe/99wj12.jpg",
+    "https://files.catbox.moe/ezpnd2.jpg",
+    "https://files.catbox.moe/e7q55f.jpg",
+    "https://files.catbox.moe/qyfsi7.jpg",
+    "https://files.catbox.moe/kbke7s.jpg",
+    "https://files.catbox.moe/7icvpu.jpg",
+    "https://files.catbox.moe/4hd77z.jpg",
+    "https://files.catbox.moe/yn7wje.jpg",
+    "https://files.catbox.moe/kifsir.jpg",
+    "https://files.catbox.moe/zi21kc.jpg",
+    "https://files.catbox.moe/z0gh23.jpg",
+    "https://files.catbox.moe/f2s4ws.jpg",
+    "https://files.catbox.moe/26nzoq.jpg",
+    "https://files.catbox.moe/fu6jk3.jpg",
+    "https://telegra.ph/file/d30d11c4365c025c25e3e.jpg",
+]
 
-@app.on_message(filters.command(["mstart"]) & filters.private & ~BANNED_USERS)
+@app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
-    random_emoji = random.choice(VALID_EMOJII)  # Pick a valid emoji
-    try:
-        await message.react(random_emoji)
-    except Exception as e:
-        print(f"Error reacting with emoji: {e}")
+    
+    # Typing effect part
+    typing_message = await message.reply("<b>ᴅɪηɢ..ᴅσηɢ..🥀</b>")  # Initial message
+    
+    # Simulate typing
+    typing_text = "<b>𝖲ᴛᴧʀᴛɪηɢ...❤️‍🔥</b>**"
+    
+    for i in range(1, len(typing_text) + 1):  # Loop through each character
+        try:
+            await typing_message.edit_text(typing_text[:i])
+            await asyncio.sleep(0.001)  # Add delay to simulate typing
+        except Exception as e:
+            print(f"Error while editing message: {e}")  # Print error if occurs
+
+    await asyncio.sleep(1)  # Keep message for a while
+    await typing_message.delete()  # Delete the message
+
+    # Continue with the existing logic after typing effect
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
+
+        if name[0:3] == "del":
+            await del_plist_msg(client=client, message=message, _=_)
+        
         if name[0:4] == "help":
-            keyboard = first_page(_)
+            keyboard = help_pannel(_)
             return await message.reply_photo(
-                photo=config.START_IMG_URL,
+                random.choice(NEXI_VID),
                 caption=_["help_1"].format(config.SUPPORT_CHAT),
                 reply_markup=keyboard,
             )
@@ -94,7 +134,7 @@ async def start_pm(client, message: Message, _):
     else:
         out = private_panel(_)
         await message.reply_photo(
-            photo=config.START_IMG_URL,
+            random.choice(NEXI_VID),
             caption=_["start_2"].format(message.from_user.mention, app.mention),
             reply_markup=InlineKeyboardMarkup(out),
         )
@@ -105,13 +145,13 @@ async def start_pm(client, message: Message, _):
             )
 
 
-@app.on_message(filters.command(["mstart"]) & filters.group & ~BANNED_USERS)
+@app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
     await message.reply_photo(
-        photo=config.START_IMG_URL,
+        random.choice(NEXI_VID),
         caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
         reply_markup=InlineKeyboardMarkup(out),
     )
@@ -146,9 +186,9 @@ async def welcome(client, message: Message):
 
                 out = start_panel(_)
                 await message.reply_photo(
-                    photo=config.START_IMG_URL,
+                    random.choice(NEXI_VID),
                     caption=_["start_3"].format(
-                        message.from_user.first_name,
+                        message.from_user.mention,
                         app.mention,
                         message.chat.title,
                         app.mention,
