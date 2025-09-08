@@ -23,9 +23,9 @@ SONG_DOWNLOAD_DURATION = int(
 
 LOGGER_ID = int(getenv("LOGGER_ID", ""))
 
-OWNER_ID = int(getenv("OWNER_ID", "7995626429"))
+OWNER_ID = int(getenv("OWNER_ID", "7152072474"))
 
-BOT_USERNAME = getenv("BOT_USERNAME" , "KittuxRobot")
+BOT_USERNAME = getenv("BOT_USERNAME" , "Maha_music_robot")
 
 COMMAND_HANDLER = getenv("COMMAND_HANDLER", "! / .").split()
 
@@ -36,15 +36,15 @@ HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
 UPSTREAM_REPO = getenv(
     "UPSTREAM_REPO",
-    "https://github.com/IstkharXrobot/ISTKHAR-MUSIC",
+    "https://github.com/AVENGERSOWNER1/ISTKHAR-AVENGERS-",
 )
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "SPY")
 GIT_TOKEN = getenv(
     "GIT_TOKEN", ""
 )  # Fill this variable if your upstream repository is private
 
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/iamIstkhar")
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/ARISHFA_UPDATE")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/ShiriUpdate")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/+ijVUQc7TNEUwNmNl")
 
 
 AUTO_LEAVING_ASSISTANT = bool(getenv("AUTO_LEAVING_ASSISTANT", False))
