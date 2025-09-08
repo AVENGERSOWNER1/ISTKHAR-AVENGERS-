@@ -23,7 +23,7 @@ SONG_DOWNLOAD_DURATION = int(
 
 LOGGER_ID = int(getenv("LOGGER_ID", ""))
 
-OWNER_ID = int(getenv("OWNER_ID", "7152072474"))
+OWNER_ID = int(getenv("OWNER_ID", "6365798744"))
 
 BOT_USERNAME = getenv("BOT_USERNAME" , "Maha_music_robot")
 
